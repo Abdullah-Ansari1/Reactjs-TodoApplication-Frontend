@@ -68,7 +68,7 @@ const Todos = () => {
         {!loading ? todos.length !== 0 ? todos.map((item) => (
           <div className="todo" key={item._id}>
             <div className={`todo__status ${item.status}`}><span>{item.status}</span></div>
-            <h2 className="todo__title">Title:{item.title}</h2>
+            <h2 className="todo__title">Title:{item.title.length>20?`${item.title.slice(0, 20)}...`:item.title}</h2>
             <p className={`todo__apply ${item.status}`}>
               <span>Due Date:</span> {moment(item.due_Date).format('LL')}
             </p>
