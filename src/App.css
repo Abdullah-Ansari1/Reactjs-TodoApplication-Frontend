@@ -1,39 +1,233 @@
-.App {
-  text-align: center;
+.container{
+  margin: 20px;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.form-Data{
+  background: radial-gradient(#1fe4f5, #3fbafe);
+  padding: 20px;
+  width: 70%;
+  border-radius: 4px;
+}
+.input-Data{
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 500;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.input-Data>input{
+width: 100%;
+background: aliceblue;
+border: none;
+border-radius: 4px;
+padding: 5px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
+.input-Data>select{
+  width: 100%;
+  background: aliceblue;
+  border: none;
+  border-radius: 4px;
+  padding: 5px;
   }
+
+
+.addtodo-btn{
+  padding: 10px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
 }
 
-.App-header {
-  min-height: 100vh;
+.todos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.todo {
+  margin: 20px;
+  padding: 20px;
+  width: 500px;
+  min-height: 200px;
+  display: grid;
+  grid-template-rows: 20px 50px 1fr 50px;
+  border-radius: 10px;
+  background: radial-gradient(#1fe4f5, #3fbafe);
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+  transition: all 0.2s;
+}
+
+.todo:hover {
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.4);
+  transform: scale(1.01);
+}
+
+.todo__link,
+.todo__exit,
+.todo__status {
+  position: relative;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.todo__link::after {
+  position: absolute;
+  top: 25px;
+  left: 0;
+  content: "";
+  width: 0%;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.6);
+  transition: all 0.5s;
+}
+
+.todo__link:hover::after {
+  width: 100%;
+}
+
+.todo__exit {
+  grid-row: 1/2;
+  justify-self: end;
+}
+
+.todo__status {
+  grid-row: 2/3;
+  padding: 4px 6px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  border-radius: 4px;
+  height: fit-content;
+  width: fit-content;
+}
+.PENDING{
+  background-color: #ffe3e3;
+    color: red;
+}
+.COMPLETED{
+  background-color: #c5ffe8;
+    color: #3ed876;
+}
+.DELAYED{
+  background-color: #deeeff;
+  color: #1c78e0;
+}
+.todo__title {
+  grid-row: 3/4;
+  font-weight: 400;
+  color: #ffffff;
+}
+
+.todo__apply {
+  grid-row: 4/5;
+  padding-left: 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  align-self: center;
+}
+.todo-icons-edit-delete{
+  grid-row: 5/6;
+  justify-content: space-around;
+}
+.header__ul{
+  display: flex;
+    gap: 1rem;
+    background: aliceblue;
+    padding: 0;
+    margin-top: 0;
+}
+li{
+list-style: none;
+margin-left: 28px;
+padding: 10px;
+}
+
+
+.updateTodo__modal{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  padding: 0 30%;
+  z-index: 999999;
+  opacity: 0;
+  visibility: hidden;
+  transition: .3s;
+}
+.updateTodo__modal-content{
+  position: relative;
+  background-color: aliceblue;
+  padding: 1.5rem;
+  border-radius: .5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+.updateTodo__modal-title{
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+.updateTodo__modal-close{
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  color: #000;
+  cursor: pointer;
+}
+/* Active Modal */
+.active-modal{
+  opacity: 1;
+  visibility: visible;
 }
 
-.App-link {
-  color: rgb(112, 76, 182);
+.header__li{
+  text-decoration: none !important;
+}
+.header__active{
+  background: #697f93;
+  color: aliceblue !important;
+  padding: 0.5rem;
 }
 
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+.del{
+  display: block !important;
+}
+.delmodel{
+  top: 20vh;
+  background: #ffe3e3;
+  color: red;
+}
+.delTodo__modal-title{
+  margin-bottom: 1rem;
+  font-size: 1rem;
+
+}
+.del-btns{
+  display: flex;
+  gap: 1rem;
+}
+
+.del-btn1{
+  padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background: red;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+.del-btn2{
+  background-color: #1c78e0;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 10px 20px;
 }
