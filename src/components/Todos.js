@@ -2,63 +2,60 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import moment from 'moment';
 import { toast } from 'react-toastify';
-import { fetchTodos, deleteTodo, updateTodo } from '../redux/reducers/todoReducers';
-import { UilEdit, UilTrashAlt, UilTimes } from '@iconscout/react-unicons'
+import { fetchTodos, deleteTodo, updateTodo, EditModal, DelModal, SetToday,SetTodoDelId ,SetStatusArray} from '../redux/reducers/todoReducers';
+import { UilEdit, UilTrashAlt, UilTimes } from '@iconscout/react-unicons';
+
 const Todos = () => {
   const todosData = useSelector(state => state.todos);
   const [editTodo, setEditTodo] = useState({ id: "", title: "", status: "", due_Date: "" });
-  const [editModal, setEditModal] = useState(false);
-  const [delModal, setDelModal] = useState(false);
-  const [today, setToday] = useState('');
-  const [statusArray, setStatusArray] = useState(["COMPLETED", "PENDING", "DELAYED"]);
 
-  const { loading, todos, message } = todosData;
+  const { loading, todos, message, editModal, delModal, today, todoIdForDel,statusArray} = todosData;
   const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(fetchTodos());
-    getDate();
+    dispatch(SetToday());
     // eslint-disable-next-line 
   }, [message]);
 
+  //handle delete icon click
   const handleDelete = (id, e) => {
     e.stopPropagation();
-    setDelModal(true);
-    setEditTodo({ id: id, title: "", status: "", due_Date: "" })
+    dispatch(DelModal(true));
+    dispatch(SetTodoDelId(id));
   }
+
+  //handle Confirm delete
   const confirmDelete = () => {
-    dispatch(deleteTodo(editTodo.id));
-    setDelModal(false);
-    setEditTodo({ id: "", title: "", status: "", due_Date: "" });
+    dispatch(deleteTodo(todoIdForDel));
+    dispatch(DelModal(false));
+    dispatch(SetTodoDelId(""));
     toast.info("Todo deleted Successfully");
   }
+
+  //handle edit icon click
   const handleUpdate = (todo, e) => {
     e.stopPropagation();
     let dueDateformat = moment(todo.due_Date).format('YYYY-MM-DD');
     setEditTodo({ id: todo._id, title: todo.title, status: todo.status, due_Date: dueDateformat });
-    setStatusArray(statusArray.filter(item => { return item !== todo.status }));
-    setEditModal(true);
+    dispatch(SetStatusArray(statusArray.filter(item => { return item !== todo.status })));
+    dispatch(EditModal(true));
   }
+
+  //handle update todobutton
   const handleSave = (e) => {
     e.preventDefault();
     const { id, title, status, due_Date } = editTodo;
-    dispatch(updateTodo({ id, title, status, due_Date }))
-    setEditModal(false);
+    dispatch(updateTodo({ id, title, status, due_Date }));
+    dispatch(EditModal(false));
     setEditTodo({ id: "", title: "", status: "", due_Date: "" });
-    setStatusArray(["COMPLETED", "PENDING", "DELAYED"]);
+    dispatch(SetStatusArray(["PENDING","COMPLETED","DELAYED"]));
     toast.info("Todo Updated Successfully");
   }
+
+  //handle change data of todo in the form
   const onChange = (e) => {
     setEditTodo({ ...editTodo, [e.target.name]: e.target.value })
-  }
-
-  const getDate = () => {
-    let todayDate = new Date();
-    let dd = todayDate.getDate();
-    let mm = todayDate.getMonth() + 1;
-    let yyyy = todayDate.getFullYear();
-    todayDate = yyyy + '-' + mm + '-' + dd;
-    setToday(todayDate);
-
   }
 
   return (
@@ -68,7 +65,7 @@ const Todos = () => {
         {!loading ? todos.length !== 0 ? todos.map((item) => (
           <div className="todo" key={item._id}>
             <div className={`todo__status ${item.status}`}><span>{item.status}</span></div>
-            <h2 className="todo__title">Title:{item.title.length>20?`${item.title.slice(0, 20)}...`:item.title}</h2>
+            <h2 className="todo__title">Title:{item.title.length > 20 ? `${item.title.slice(0, 20)}...` : item.title}</h2>
             <p className={`todo__apply ${item.status}`}>
               <span>Due Date:</span> {moment(item.due_Date).format('LL')}
             </p>
@@ -77,12 +74,13 @@ const Todos = () => {
         )) : "No Todos To Show" : "Loading..."
         }
       </div>
+
       {/* Update Todo Modal */}
       {editModal ? <>
         <div className="updateTodo__modal active-modal">
           <div className="updateTodo__modal-content">
             <h4 className="updateTodo__modal-title">Update Todo</h4>
-            <UilTimes className="updateTodo__modal-close" onClick={() => { setEditModal(false); setEditTodo({ id: "", title: "", status: "", due_Date: "" }); setStatusArray(["COMPLETED", "PENDING", "DELAYED"]); }} />
+            <UilTimes className="updateTodo__modal-close" onClick={() => { dispatch(EditModal(false)); setEditTodo({ id: "", title: "", status: "", due_Date: "" }); dispatch(SetStatusArray(["PENDING","COMPLETED","DELAYED"])); }} />
             <form className="form-Data">
               <div className="input-Data">
                 <label htmlFor="title">Title</label>
@@ -106,15 +104,16 @@ const Todos = () => {
           </div>
         </div>
       </> : null}
+
       {/* DELETE MODAL */}
       {delModal ? <>
         <div className="updateTodo__modal active-modal del">
           <div className="updateTodo__modal-content delmodel">
             <h4 className="delTodo__modal-title">Are You Sure You want to delete the todo?</h4>
-            <UilTimes className="updateTodo__modal-close" onClick={() => { setDelModal(false); setEditTodo({ id: "", title: "", status: "", due_Date: "" }); }} />
+            <UilTimes className="updateTodo__modal-close" onClick={() => { dispatch(DelModal(false)); dispatch(SetTodoDelId("")); }} />
             <div className='del-btns'>
               <button className="del-btn1" onClick={confirmDelete} >Yes</button>
-              <button className="del-btn2" onClick={() => { setDelModal(false); setEditTodo({ id: "", title: "", status: "", due_Date: "" }); }}>Cancel</button>
+              <button className="del-btn2" onClick={() => { dispatch(DelModal(false)); dispatch(SetTodoDelId("")); }}>Cancel</button>
             </div>
           </div>
         </div>
