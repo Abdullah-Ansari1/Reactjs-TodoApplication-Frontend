@@ -1,9 +1,24 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "axios";
 import { CreateTodo,DeleteTodo,FetchTodos, UpdateTodo } from '../../Apis/Apis';
+
+// Get Today Date
+const getDate = () => {
+  let todayDate = new Date();
+  let dd = todayDate.getDate();
+  let mm = todayDate.getMonth() + 1;
+  let yyyy = todayDate.getFullYear();
+  return todayDate = yyyy + '-' + mm + '-' + dd;
+}
+
 const initialState = {
     loading:false,
     message:"",
+    todoIdForDel:"",
+    editModal:false,
+    delModal:false,
+    statusArray:["PENDING","COMPLETED", "DELAYED"],
+    today:getDate(),
     todos:[]
 };
 
@@ -90,10 +105,41 @@ export const fetchTodos = createAsyncThunk(
 
 
 
+
 const todoReducers = createSlice({
     name: 'Todo',
     initialState,
     reducers: {
+      EditModal(state, action) {
+        return {
+          ...state,
+            editModal:action.payload
+        };
+      },
+      DelModal(state, action) {
+        return {
+          ...state,
+            delModal:action.payload
+        };
+      },
+      SetToday(state) {
+        return {
+          ...state,
+            today:getDate()
+        };
+      },
+      SetTodoDelId(state, action){
+        return {
+          ...state,
+            todoIdForDel:action.payload
+        };
+      },
+      SetStatusArray(state, action){
+        return {
+          ...state,
+            statusArray:action.payload
+        };
+      },
     },
     extraReducers: {
         [createTodo.pending]: (state, action) => {
@@ -186,5 +232,8 @@ const todoReducers = createSlice({
     }
 });
 
+const { reducer, actions } = todoReducers;
 
-export default todoReducers.reducer;
+export const { EditModal,DelModal,SetToday,SetTodoDelId,SetStatusArray} = actions;
+
+export default reducer;
